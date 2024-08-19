@@ -10,8 +10,8 @@ import (
 
 type ForgotRepository interface {
 	GenerateOTP(email string, auth *models.Auth) error
-	ValidateOTP(email string, auth *models.Auth) error
-	ResetPassword(email string, auth *models.Auth) error
+	ValidateOTP(email string) error
+	ResetPassword(auth *models.Auth) error
 }
 
 type forgotRepository struct {
@@ -45,7 +45,7 @@ func (r *forgotRepository) GenerateOTP(email string, auth *models.Auth) error {
 	return result.Error
 }
 
-func (r *forgotRepository) ValidateOTP(email string, auth *models.Auth) error {
+func (r *forgotRepository) ValidateOTP(email string) error {
 	result := r.DB.Model(&models.Auth{}).Where("auth_email = ?", email).Updates(map[string]interface{}{
 		"reset_otp":  "",
 		"otp_expire": time.Time{},
@@ -58,8 +58,8 @@ func (r *forgotRepository) ValidateOTP(email string, auth *models.Auth) error {
 	return result.Error
 }
 
-func (r *forgotRepository) ResetPassword(email string, auth *models.Auth) error {
-	result := r.DB.Model(&models.Auth{}).Where("auth_email = ?", email).Updates(map[string]interface{}{
+func (r *forgotRepository) ResetPassword(auth *models.Auth) error {
+	result := r.DB.Model(&models.Auth{}).Where("auth_email = ?", auth.AuthEmail).Updates(map[string]interface{}{
 		"auth_password": auth.AuthPassword,
 	})
 

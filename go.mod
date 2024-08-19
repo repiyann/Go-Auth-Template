@@ -18,6 +18,8 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mailjet/mailjet-apiv3-go/v3 v3.2.0 // indirect
+	github.com/philhofer/fwd v1.1.2 // indirect
+	github.com/tinylib/msgp v1.1.8 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 )

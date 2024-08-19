@@ -113,3 +113,54 @@ func (controller *ForgotController) ValidateOTP(c *fiber.Ctx) error {
 		"message": "Successfully validated OTP",
 	})
 }
+
+func (controller *ForgotController) ResetPassword(c *fiber.Ctx) error {
+	reset := new(requests.ResetPassword)
+
+	if err := c.BodyParser(reset); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": fiber.Map{
+				"errors": "Invalid input",
+			},
+		})
+	}
+
+	validationErrors := utils.Validate(reset)
+	if len(validationErrors.Errors) > 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": fiber.Map{
+				"errors": validationErrors.Errors,
+			},
+		})
+	}
+
+	err := controller.ForgotService.ResetPassword(reset)
+	if err != nil {
+		if err.Error() == "duplicate" {
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+				"success": false,
+				"message": fiber.Map{
+					"errors": "Email already in use",
+				},
+			})
+		}
+
+		if err.Error() == "passwords not match" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"message": fiber.Map{
+					"errors": "Password and Confirm Password do not match",
+				},
+			})
+		}
+
+		return err
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"success": true,
+		"message": "Succesfully reset password",
+	})
+}

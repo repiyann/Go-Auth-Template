@@ -51,6 +51,15 @@ func (controller *AuthController) Register(c *fiber.Ctx) error {
 			})
 		}
 
+		if err.Error() == "passwords not match" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"success": false,
+				"message": fiber.Map{
+					"errors": "Password and Confirm Password do not match",
+				},
+			})
+		}
+
 		return err
 	}
 
@@ -84,6 +93,14 @@ func (controller *AuthController) Login(c *fiber.Ctx) error {
 
 	token, err := controller.AuthService.Login(login)
 	if err != nil {
+		if err.Error() == "invalid credentials" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"success": false,
+				"message": fiber.Map{
+					"errors": "Invalid credentials",
+				},
+			})
+		}
 		return err
 	}
 

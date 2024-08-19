@@ -32,6 +32,10 @@ func NewAuthService(repo repositories.AuthRepository) AuthService {
 }
 
 func (s *authService) Register(request *requests.RegisterRequest) error {
+	if request.Password != request.ConfirmPassword {
+		return errors.New("passwords not match")
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
