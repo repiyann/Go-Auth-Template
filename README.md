@@ -24,8 +24,8 @@ Additionally, you'll need to set up a Mailjet account for email functionalities.
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/your-repository.git
-    cd your-repository
+    git clone https://github.com/repiyann/Go-Auth-Template.git
+    cd Go-Auth-Template
     ```
 2. Install Go dependencies:
     ```bash
